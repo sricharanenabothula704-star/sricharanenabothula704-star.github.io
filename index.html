@@ -234,7 +234,7 @@
       <div class="explain-card rv"><h3><span class="num">🔬</span> Run Metadata Helper</h3>
         <p>Use <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">scripts/run_meta.sh</code> to emit a run ID, timestamp, provider, and tool versions for a finding. It is an explicit helper, not an automatic stamp.</p></div>
       <div class="explain-card rv"><h3><span class="num">🧠</span> 23 Provider Targets</h3>
-        <p><code style="font-family:var(--mono);font-size:12px;color:var(--accent)">scripts/hydra_models.sh</code> checks credentials for 23 model providers. OpenCode uses the configured provider and model; 300+ models are available through OpenRouter.</p></div>
+        <p><code style="font-family:var(--mono);font-size:12px;color:var(--accent)">scripts/hydra_models.sh</code> checks credentials for 23 environment-key providers. OpenCode-managed providers are connected with <code>/connect</code> and selected with <code>/models</code>.</p></div>
       <div class="explain-card rv"><h3><span class="num">⚡</span> Guided Setup</h3>
         <p>Open the AI setup prompt or run <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">bash setup.sh --handle YOU --email you@example.com</code>. It backs up existing config and asks before installing OpenCode.</p></div>
       <div class="explain-card rv"><h3><span class="num">🎯</span> Real Commands</h3>
@@ -277,7 +277,7 @@
     <div class="steps">
       <div class="step rv">
         <h3>Pick a model provider</h3>
-        <p>The default config uses OpenRouter. Set <code>OPENROUTER_API_KEY</code> in your shell before launching OpenCode. Other providers need a matching provider/model config; the model helper shows supported credentials.</p>
+        <p>HYDRA leaves model selection to OpenCode. Launch it, use <code>/connect</code> to authenticate with a provider, then <code>/models</code> to inspect or select a model. OpenCode Zen is a curated option but may require its own account/API key and paid credits; OpenRouter remains optional.</p>
       </div>
       <div class="step rv">
         <h3>Confirm your authorization</h3>
