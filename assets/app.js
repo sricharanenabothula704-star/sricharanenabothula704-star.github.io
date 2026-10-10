@@ -131,11 +131,29 @@
   document.querySelectorAll('[data-copy]').forEach(function(btn){
     btn.addEventListener('click', function(){
       var src = document.querySelector(btn.getAttribute('data-copy'));
-      navigator.clipboard.writeText(src.innerText.trim()).then(function(){
-        var old = btn.textContent;
+      if(!src) return;
+      var text=src.innerText.trim();
+      var original=btn.textContent;
+      function copied(){
         btn.textContent = '✓ copied';
-        setTimeout(function(){ btn.textContent = old; }, 1400);
-      });
+        setTimeout(function(){ btn.textContent = original; }, 1400);
+      }
+      function fallbackCopy(){
+        var field=document.createElement('textarea');
+        field.value=text;field.setAttribute('readonly','');
+        field.style.position='fixed';field.style.opacity='0';
+        document.body.appendChild(field);field.select();
+        var ok=false;
+        try{ok=document.execCommand('copy');}catch(e){}
+        field.remove();
+        return ok;
+      }
+      if(navigator.clipboard&&window.isSecureContext){
+        navigator.clipboard.writeText(text).then(copied).catch(function(){
+          if(fallbackCopy()) copied(); else btn.textContent='Copy failed';
+        });
+      } else if(fallbackCopy()) copied();
+      else btn.textContent='Copy failed';
     });
   });
 
@@ -164,7 +182,9 @@
       ['[*] Rendering opencode.jsonc with your identity', 'out'],
       ['[*] Creating recon workspace, scope allowlist + helper scripts', 'out'],
       [' \u2705 HYDRA IS INSTALLED', 'done'],
-      ['$ export OPENROUTER_API_KEY=YOUR_KEY', 'cmd'],
+      ['$ opencode', 'cmd'],
+      ['> /connect → authenticate with a provider', 'out'],
+      ['> /models → inspect or select a model', 'out'],
       ['$ hydra doctor', 'cmd'],
       ['[✓] OpenCode found · scope allowlist present', 'out'],
       ['$ python3 -m http.server 8080 --bind 127.0.0.1 --directory docs', 'cmd'],
