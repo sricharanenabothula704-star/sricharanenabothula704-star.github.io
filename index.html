@@ -124,6 +124,27 @@
   </div>
 </section>
 
+<section class="plain" id="browser-setup">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-kicker">Optional browser validation</span>
+      <h2>Set up Playwright MCP in two ways</h2>
+      <p class="sec-sub">Playwright helps inspect rendered pages and client-side behavior. It does not bypass bot detection or enforce HYDRA's scope allowlist.</p>
+    </div>
+    <div class="explain-grid">
+      <div class="explain-card rv">
+        <h3><span class="num">1</span> OpenCode slash command</h3>
+        <p>From the HYDRA repository, run <code>/playwright-setup</code>. The agent checks prerequisites, explains the changes, and asks before downloading packages or editing config. It leaves the MCP disabled until you approve enabling it.</p>
+      </div>
+      <div class="explain-card rv">
+        <h3><span class="num">2</span> Copy the setup prompt</h3>
+        <p>Paste the <a href="https://github.com/sricharanenabothula704-star/hydra/blob/main/docs/AI_PLAYWRIGHT_MCP_SETUP_PROMPT.md">Playwright MCP setup prompt</a> into an OpenCode agent with terminal access. It guides the same approval-based steps; it cannot guarantee a perfect install on every system.</p>
+      </div>
+    </div>
+    <p class="sec-sub" style="margin-top:20px">After enabling, use <code>/browser-check https://your-authorized-host</code>. Confirm written scope first. If you encounter a CAPTCHA, bot challenge, rate limit, or access denial, stop—do not try to evade it. See the <a href="https://github.com/sricharanenabothula704-star/hydra/blob/main/docs/PLAYWRIGHT_MCP.md">safety and configuration notes</a>.</p>
+  </div>
+</section>
+
 <section>
   <div class="wrap">
     <div class="sec-head rv">
