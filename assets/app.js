@@ -142,13 +142,14 @@
         var field=document.createElement('textarea');
         field.value=text;field.setAttribute('readonly','');
         field.style.position='fixed';field.style.opacity='0';
-        document.body.appendChild(field);field.select();
+        document.body.appendChild(field);field.focus();field.select();
+        field.setSelectionRange(0,field.value.length);
         var ok=false;
         try{ok=document.execCommand('copy');}catch(e){}
         field.remove();
         return ok;
       }
-      if(navigator.clipboard&&window.isSecureContext){
+      if(navigator.clipboard&&window.isSecureContext&&document.hasFocus()){
         navigator.clipboard.writeText(text).then(copied).catch(function(){
           if(fallbackCopy()) copied(); else btn.textContent='Copy failed';
         });
