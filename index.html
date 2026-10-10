@@ -261,14 +261,20 @@
   <div class="wrap">
     <div class="sec-head rv">
       <span class="sec-kicker">Getting started</span>
-      <h2>From zero to first scoped run</h2>
-      <p class="sec-sub">Linux, macOS, or WSL. Prefer an AI coding agent? Open the <a href="https://github.com/sricharanenabothula704-star/hydra/blob/main/docs/AI_SETUP_PROMPT.md">copy/paste setup prompt</a>; it tells the agent to explain changes, back up config, and ask before installing.</p>
+      <h2>Two ways to install HYDRA</h2>
+      <p class="sec-sub">Use the terminal setup, or—if OpenCode is already installed—let an AI coding agent guide the setup from the repository.</p>
+    </div>
+    <div class="explain-grid" style="margin-bottom:36px">
+      <div class="explain-card rv">
+        <h3><span class="num">1</span> Terminal setup</h3>
+        <p>Clone the repository and run <code>bash setup.sh --handle YOUR_HANDLE --email you@example.com</code>. Setup backs up an existing OpenCode config and asks before replacing it.</p>
+      </div>
+      <div class="explain-card rv">
+        <h3><span class="num">2</span> OpenCode AI setup prompt</h3>
+        <p>With OpenCode installed, open the HYDRA repository as your workspace and paste the <a href="https://github.com/sricharanenabothula704-star/hydra/blob/main/docs/AI_SETUP_PROMPT.md">AI setup prompt</a> into the agent. It checks prerequisites, explains the plan, backs up config, and—after your approval—runs setup and verifies <code>hydra doctor</code>. It does not launch a scan.</p>
+      </div>
     </div>
     <div class="steps">
-      <div class="step rv">
-        <h3>Install</h3>
-        <p>Clone the repo and run <code>bash setup.sh --handle YOU --email you@example.com</code>. Setup backs up an existing config and asks before installing OpenCode or replacing that config.</p>
-      </div>
       <div class="step rv">
         <h3>Pick a model provider</h3>
         <p>The default config uses OpenRouter. Set <code>OPENROUTER_API_KEY</code> in your shell before launching OpenCode. Other providers need a matching provider/model config; the model helper shows supported credentials.</p>
