@@ -196,24 +196,27 @@
   var term = document.getElementById('term-body');
   if (term && !RM) {
     var LINES = [
-      ['$ git clone https://github.com/sricharan996/hydra.git', 'cmd'],
+      ['$ git clone https://github.com/sricharanenabothula704-star/hydra.git', 'cmd'],
       ['Cloning into \'hydra\'...', 'out'],
-      ['remote: Enumerating objects: 391, done.', 'out'],
-      ['Receiving objects: 100% (391/391), 1.14 MiB | 16.9 MiB/s, done.', 'out'],
-      ['$ cd hydra && bash setup.sh', 'cmd'],
+      ['remote: Enumerating objects...', 'out'],
+      ['Receiving objects: complete.', 'out'],
+      ['$ cd hydra && bash setup.sh --handle YOUR_HANDLE --email you@example.com', 'cmd'],
       ['   \ud83d\udc09 HYDRA \u2014 AI BUG BOUNTY SYSTEM SETUP', 'ok'],
-      ['[*] opencode not found \u2014 installing automatically...', 'out'],
-      ['[\u2713] opencode installed: 1.18.21', 'ok'],
+      ['[*] Checking prerequisites and existing config...', 'out'],
+      ['[\u2713] Existing config backed up if present', 'ok'],
       ['[*] Installing agents, skills, methodology -> ~/.config/opencode', 'out'],
       ['[*] Rendering opencode.jsonc with your identity', 'out'],
-      ['[*] Creating recon workspace + helper scripts', 'out'],
+      ['[*] Creating recon workspace, scope allowlist + helper scripts', 'out'],
       [' \u2705 HYDRA IS INSTALLED', 'done'],
-      ['$ source ~/.bashrc', 'cmd'],
-      ['$ export OPENROUTER_API_KEY=sk-or-...', 'cmd'],
-      ['$ opencode', 'cmd'],
-      ['', 'out'],
-      ['> /hunt example.com          # authorized targets only', 'warn'],
-      ['seven heads activated \u00b7 happy hunting', 'done']
+      ['$ export OPENROUTER_API_KEY=YOUR_KEY', 'cmd'],
+      ['$ hydra doctor', 'cmd'],
+      ['[✓] OpenCode found · scope allowlist present', 'out'],
+      ['$ python3 -m http.server 8080 --bind 127.0.0.1 --directory docs', 'cmd'],
+      ['Serving HTTP on 127.0.0.1 port 8080...', 'out'],
+      ['$ hydra scan http://localhost:8080', 'cmd'],
+      ['[SCOPE-ALLOW] localhost is on the local allowlist', 'out'],
+      ['HEAD response received · security headers checked · no redirect followed', 'done'],
+      ['For a real hunt, add only a written-authorized host before /hunt.', 'warn']
     ];
     var li = 0, ci = 0, started = false;
     function typeStep() {
@@ -295,7 +298,7 @@
       var body = '\u2605 Rating: ' + rating + '/5\n\n' + (cmt || '(no comment)') +
                  '\n\n--- submitted via site rating widget';
       ev.preventDefault();
-      window.open('https://github.com/sricharan996/hydra/discussions/new?category=announcements' +
+    window.open('https://github.com/sricharanenabothula704-star/hydra/discussions/new?category=announcements' +
         '&title=' + encodeURIComponent('Review: ' + rating + '/5 stars') +
         '&body=' + encodeURIComponent(body), '_blank');
       sub.textContent = '\u2713 saved \u00b7 posted to GitHub \u2713';
@@ -304,7 +307,7 @@
 
   // live stats from public GitHub API (keyless; silent-fail)
   try {
-    fetch('https://api.github.com/repos/sricharan996/hydra/discussions?per_page=50')
+    fetch('https://api.github.com/repos/sricharanenabothula704-star/hydra/discussions?per_page=50')
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(ds){
         if (!ds) return;
