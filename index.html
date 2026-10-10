@@ -30,7 +30,7 @@
       <a href="agents.html">Agents</a>
       <a href="skills.html">Skills</a>
       <a href="index.html#start">Get Started</a>
-      <a href="index.html#reviews">Reviews</a>
+      <a href="index.html#validation">Validation</a>
       <a href="index.html#roadmap">Roadmap</a>
       <a href="index.html#about">About</a>
       <a href="index.html#faq">FAQ</a>
@@ -99,11 +99,11 @@
       </div>
       <div class="explain-card rv">
         <h3><span class="num">2</span> What does it actually do?</h3>
-        <p>Give it a website you're authorized to test. It maps every subdomain, fingerprints the tech, probes for known weakness patterns, verifies what it finds three separate times, and writes everything up with proof-of-concept commands a human can replay.</p>
+        <p>For guarded workflows, give it a target you're authorized to test. Depending on enabled tools and configuration, HYDRA can map assets, fingerprint technologies, run checks, and prepare candidate findings for review. Verify evidence yourself before reporting.</p>
       </div>
       <div class="explain-card rv">
-        <h3><span class="num">3</span> Why "no false positives" matters?</h3>
-        <p>Bounty platforms reject sloppy reports — too many and your account gets banned. HYDRA's Verifier agent exists purely to say <em>"prove it again"</em>. If confidence is under 80%, the finding dies before it ever reaches a triage queue.</p>
+        <h3><span class="num">3</span> Why verification matters</h3>
+        <p>Bounty platforms reject unsupported reports. HYDRA's Verifier is intended to challenge leads with repeat checks and evidence review, but its checks are heuristic—not a guarantee. Treat results as candidates and reproduce them yourself before submitting.</p>
       </div>
     </div>
   </div>
@@ -129,7 +129,7 @@
     <div class="sec-head rv">
       <span class="sec-kicker">The pipeline</span>
       <h2>How a hunt flows through the heads</h2>
-      <p class="sec-sub">Each agent hands off to the next. Everything is saved locally, hashed, and traceable.</p>
+      <p class="sec-sub">Agents are designed to hand off findings with local records. Optional integrations and helper scripts may transmit data; inspect their behavior and configuration first.</p>
     </div>
     <div class="flow rv">
       <div class="flow-node"><div class="fn-name" style="color:#00cc66">RECON</div><p>Maps the attack surface: subdomains, live hosts, tech stack. Tags CDN-shielded targets.</p></div>
@@ -209,7 +209,7 @@
       <div class="explain-card rv"><h3><span class="num">♾️</span> Loop Mode</h3>
         <p>Start the continuous loop with <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">./scripts/hydra_loop.sh targets.txt 40</code>. The script checks each target against your scope allowlist before launching a cycle.</p></div>
       <div class="explain-card rv"><h3><span class="num">🛡️</span> Scope Policy</h3>
-        <p>The CLI and loop runner check targets against your local <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">SCOPE_ALLOWLIST.txt</code>. Agents also receive explicit scope-check instructions.</p></div>
+        <p>The CLI and loop runner check their supported commands against your local <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">SCOPE_ALLOWLIST.txt</code>. Standalone helper scripts may not enforce it; inspect them before use.</p></div>
       <div class="explain-card rv"><h3><span class="num">🔬</span> Run Metadata Helper</h3>
         <p>Use <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">scripts/run_meta.sh</code> to emit a run ID, timestamp, provider, and tool versions for a finding. It is an explicit helper, not an automatic stamp.</p></div>
       <div class="explain-card rv"><h3><span class="num">🧠</span> 23 Provider Targets</h3>
@@ -218,6 +218,8 @@
         <p>Open the AI setup prompt or run <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">bash setup.sh --handle YOU --email you@example.com</code>. It backs up existing config and asks before installing OpenCode.</p></div>
       <div class="explain-card rv"><h3><span class="num">🎯</span> Real Commands</h3>
         <p>Run <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">hydra doctor</code> for preflight, <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">hydra scan URL</code> for a scoped HTTP-header audit, or <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">hydra hunt URL</code> to invoke the configured OpenCode hunter.</p></div>
+      <div class="explain-card rv"><h3><span class="num">🧭</span> Skill Router</h3>
+        <p>Use <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">hydra skills route --task "…"</code> to select baseline and topic-matched playbooks. It ranks index metadata; agents still need to read and apply the returned files.</p></div>
     </div>
   </div>
 </section>
@@ -256,7 +258,7 @@
       </div>
       <div class="step rv">
         <h3>Hunt</h3>
-        <p>Add your authorized domains to the scope allowlist, launch <code>opencode</code>, then type <code>/hunt https://your-authorized-host</code>. Findings and reports stay local; requests are sent only to targets you explicitly authorize.</p>
+        <p>Add authorized domains to the scope allowlist, launch <code>opencode</code>, and use guarded CLI or loop commands for scope checks. Direct agent commands and standalone scripts need your own scope review. Findings are local by default, but configured AI providers receive prompts and optional integrations may transmit findings.</p>
       </div>
       <div class="step rv">
         <h3>Verify, then report</h3>
@@ -276,9 +278,9 @@
     <div class="compare-wrap rv">
       <table class="cmp">
         <tr><th style="width:34%"></th><th>Manual hunting</th><th>A chatbot alone</th><th class="hydra-col">🐉 HYDRA</th></tr>
-        <tr><td>Recon coverage</td><td class="mid">Thorough but slow — hours per target</td><td class="no">Can't scan; guesses from memory</td><td class="hydra-col yes">Full pipeline, minutes, evidence saved</td></tr>
-        <tr><td>False-positive control</td><td class="mid">Depends on your discipline that day</td><td class="no">Confidently wrong, often</td><td class="hydra-col yes">Verifier gate: 3× replay + 80% confidence bar</td></tr>
-        <tr><td>Report quality</td><td class="yes">Excellent if you're a good writer</td><td class="mid">Generic, no reproducible PoC</td><td class="hydra-col yes">Platform-format + working curl PoC</td></tr>
+        <tr><td>Recon coverage</td><td class="mid">Thorough but manual</td><td class="no">Advice only; no local tool execution</td><td class="hydra-col yes">Wrappers for configured tools; coverage varies</td></tr>
+        <tr><td>False-positive control</td><td class="mid">Depends on review process</td><td class="no">May state guesses as facts</td><td class="hydra-col yes">Verifier heuristics; human reproduction still required</td></tr>
+        <tr><td>Report quality</td><td class="yes">Depends on the writer</td><td class="mid">May omit reproducible evidence</td><td class="hydra-col yes">Drafts platform-style reports; review every claim and PoC</td></tr>
         <tr><td>Memory between sessions</td><td class="yes">Your notebook</td><td class="no">Forgets everything</td><td class="hydra-col yes">Per-agent memory files persist &amp; propagate</td></tr>
         <tr><td>Runs your real tools?</td><td class="yes">Yes — you drive them</td><td class="no">No execution</td><td class="hydra-col yes">Executes scanners, reads outputs, adapts</td></tr>
         <tr><td>Judgment &amp; creativity</td><td class="yes">★★★★★ you</td><td class="mid">★ generic advice</td><td class="mid">★★★ frameworks + your direction</td></tr>
@@ -289,33 +291,25 @@
 </section>
 
 
-<section id="reviews">
+<section class="plain" id="validation">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="sec-kicker">Early review</span>
-      <h2>What independent assessment said</h2>
-      <p class="sec-sub">HYDRA was submitted for external AI-driven code review. Unedited verdicts, verbatim.</p>
+      <span class="sec-kicker">Evidence and limitations</span>
+      <h2>What is checked—and what is not</h2>
+      <p class="sec-sub">A clear distinction between automated checks, security boundaries, and work still needed.</p>
     </div>
-    <div class="rev-wrap">
-      <div class="rev-quote rv">
-        "This is a genuinely ambitious project. The interesting part isn't the number of skills; it's the attempt to build an <em>actual multi-agent security workflow</em> rather than just throwing a giant prompt at an LLM."
-        <br><br>
-        "Hunter finds → Verifier challenges → Reporter writes. That is much better than: AI finds something → AI immediately declares it a vulnerability."
-        <br><br>
-        "You aren't just making another Nuclei wrapper… AI security agents + methodology library + verification gate + persistent agent memory + orchestration — that's <em>legitimately a strong project direction.</em>"
-        <span class="src">— independent automated architecture review, Aug 2026 (full text in repo discussions)</span>
+    <div class="explain-grid">
+      <div class="explain-card rv">
+        <h3>Automated checks</h3>
+        <p>CI runs Python compilation, index consistency, unit tests, scope-policy tests, frontmatter checks, and a secret-pattern scan. These checks establish basic integrity; they do not prove every skill or security claim is correct.</p>
       </div>
-      <div class="rev-score rv">
-        <h3>REVIEW SCORECARD</h3>
-        <div class="srow"><span>Agent design</span><div class="bar"><i data-w="85"></i></div><b>8.5</b></div>
-        <div class="srow"><span>Methodology</span><div class="bar"><i data-w="85"></i></div><b>8.5</b></div>
-        <div class="srow"><span>Architecture</span><div class="bar"><i data-w="80"></i></div><b>8.0</b></div>
-        <div class="srow"><span>Automation</span><div class="bar"><i data-w="80"></i></div><b>8.0</b></div>
-        <div class="srow"><span>Documentation</span><div class="bar"><i data-w="80"></i></div><b>8.0</b></div>
-        <div class="srow"><span>Safety boundaries</span><div class="bar"><i data-w="70"></i></div><b>7.0</b></div>
-        <div class="srow"><span>Maintainability</span><div class="bar"><i data-w="65"></i></div><b>6.5</b></div>
-        <div class="srow"><span>Testing (in progress)</span><div class="bar"><i data-w="55"></i></div><b>5.5</b></div>
-        <div class="rev-verdict">Overall <b>~7.5/10</b> · The roadmap it recommended — policy engine, eval suite, reproducibility metadata — is exactly what we're building next.</div>
+      <div class="explain-card rv">
+        <h3>Scope boundary</h3>
+        <p>The CLI and loop runner gate their supported commands against a local allowlist. Prompt instructions are not a substitute for enforcement: standalone scripts may bypass that gate, so inspect each script before use.</p>
+      </div>
+      <div class="explain-card rv">
+        <h3>Known limitations</h3>
+        <p>There is no benchmark suite establishing precision or recall yet. Oracle checks are heuristics and may miss bugs or produce false positives. Human review and reproduction are required before any report or action.</p>
       </div>
     </div>
   </div>
@@ -329,12 +323,12 @@
       <h2>FAQ</h2>
     </div>
     <div class="faq">
-      <details class="rv"><summary>Is this legal to use?</summary><div class="a">Yes — on targets you're authorized to test: your own systems, or assets inside a bug bounty program's written scope. Every agent checks scope before acting, and the repo ships a full disclaimer. Testing random websites without permission is illegal everywhere that has computers.</div></details>
+      <details class="rv"><summary>Is this legal to use?</summary><div class="a">Use it only on systems you own or have written authorization to test. The CLI and loop runner enforce the local allowlist for their guarded commands, and agent instructions require scope review. Standalone helper scripts may not enforce the allowlist; inspect them and confirm scope before running any script or sending traffic.</div></details>
       <details class="rv"><summary>Will it find bugs fully automatically while I sleep?</summary><div class="a">No — and be suspicious of anything claiming otherwise. HYDRA automates recon, pattern-matching, verification drudgery and report writing. Judgment — choosing targets, reading business logic, deciding what's worth pursuing — stays with you. Think of it as a very fast junior team you direct, not an autonomous money printer.</div></details>
-      <details class="rv"><summary>Do I need paid API keys?</summary><div class="a">You need one AI model provider. OpenRouter has free models; ollama runs fully local and free. Everything else — the skills, playbooks, scripts, CI — costs nothing and phones nobody.</div></details>
+      <details class="rv"><summary>Do I need paid API keys?</summary><div class="a">You need an AI model provider for model-backed workflows. Some providers offer free tiers; a local Ollama setup can keep model prompts on your machine. Cloud providers receive the prompts sent to them, and configured tools may contact their targets or other services. Review provider terms, privacy settings, and scripts before use.</div></details>
       <details class="rv"><summary>What makes this different from just using ChatGPT?</summary><div class="a">ChatGPT gives advice; HYDRA executes. It runs real scanners against real targets, keeps per-agent memory across sessions, enforces verification discipline, and produces reports in exact platform format. It's a workflow with guards, not a chat window.</div></details>
-      <details class="rv"><summary>Can it break my computer or leak my data?</summary><div class="a">Findings and reports stay in ~/recon_reports on your machine. The repo's CI blocks secret-shaped content from ever being committed, and GitHub push protection is enabled. As with any tool that executes commands, read what it runs — that habit will serve you well beyond HYDRA.</div></details>
-      <details class="rv"><summary>What if an agent gets stuck or hallucinates?</summary><div class="a">All seven agents carry a Self-Rescue Protocol: when confused, they fire parallel web searches, fetch primary documentation, cross-verify two independent sources, and log the knowledge gap — instead of guessing confidently. The Debug agent turns every recovered mistake into a permanent prevention rule.</div></details>
+      <details class="rv"><summary>Can it break my computer or leak my data?</summary><div class="a">Findings are stored locally by default, but this is not a guarantee that all data stays local. The optional coordination server binds to 0.0.0.0:5000 without authentication and serves submitted findings over HTTP; do not run it as shipped. The config also grants the build agent shell and edit permissions. Review scripts, permissions, and provider data handling before use.</div></details>
+      <details class="rv"><summary>What if an agent gets stuck or hallucinates?</summary><div class="a">The prompts include recovery and evidence-review guidance, but agents can still get stuck or make mistakes. Treat every result as a candidate; independently reproduce it, inspect raw evidence, and review reports before submission.</div></details>
     </div>
   </div>
 </section>
@@ -362,7 +356,7 @@
         <div class="fact"><b>1179</b><span>skill modules curated</span></div>
         <div class="fact"><b>7</b><span>agents in the rotation</span></div>
         <div class="fact"><b>35</b><span>automation tools shipped</span></div>
-        <div class="fact"><b>∞</b><span>loop mode uptime</span></div>
+        <div class="fact"><b>19</b><span>unit tests in the current CI run</span></div>
       </div>
     </div>
   </div>
@@ -373,7 +367,7 @@
     <div class="sec-head rv">
       <span class="sec-kicker">Upcoming</span>
       <h2>The road ahead</h2>
-      <p class="sec-sub">What the next releases are grinding toward — pulled straight from our external review roadmap.</p>
+      <p class="sec-sub">Planned improvements and technical debt for future releases.</p>
     </div>
     <div class="roadmap">
       <div class="ritem rv"><span class="tag next">NEXT</span><div><b>Evaluation suite</b><p>Deliberately vulnerable test apps to measure how often Hunter findings survive Verifier checks.</p></div></div>

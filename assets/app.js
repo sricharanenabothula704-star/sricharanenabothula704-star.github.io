@@ -7,7 +7,7 @@
      Seven living necks rise from an ember core. They sway, breathe,
      track your cursor — and every few seconds one STRIKES.          */
   var cv = document.getElementById('fx');
-  if (cv && !RM) {
+  if (cv) {
     var ctx = cv.getContext('2d');
     var W=0,H=0,raf=0,t=0,frames=0,lastW=0,lastH=0;
     var mouse={x:.5,y:.42,tx:.5,ty:.42};
@@ -117,18 +117,25 @@
         ctx.beginPath();ctx.arc(ex,ey,dpr*1.6,0,7);ctx.fill();
       }
 
-      raf=requestAnimationFrame(tick);
+      if(!RM) raf=requestAnimationFrame(tick);
     }
 
-    cv.parentElement.addEventListener('mousemove',function(e){
-      var r=cv.getBoundingClientRect();
-      mouse.tx=(e.clientX-r.left)/r.width; mouse.ty=(e.clientY-r.top)/r.height;
-    });
-    cv.parentElement.addEventListener('mouseleave',function(){mouse.tx=.5;mouse.ty=.42;});
+    if(!RM){
+      cv.parentElement.addEventListener('mousemove',function(e){
+        var r=cv.getBoundingClientRect();
+        mouse.tx=(e.clientX-r.left)/r.width; mouse.ty=(e.clientY-r.top)/r.height;
+      });
+      cv.parentElement.addEventListener('mouseleave',function(){mouse.tx=.5;mouse.ty=.42;});
+    }
 
     ensureSize();tick();
-    setTimeout(ensureSize,80);setTimeout(ensureSize,400);setTimeout(ensureSize,1000);
-    window.addEventListener('resize',function(){cancelAnimationFrame(raf);ensureSize();});
+    if(!RM){
+      setTimeout(ensureSize,80);setTimeout(ensureSize,400);setTimeout(ensureSize,1000);
+    }
+    window.addEventListener('resize',function(){
+      cancelAnimationFrame(raf);lastW=0;lastH=0;ensureSize();
+      tick();
+    });
   }
 
   /* ================= 3D GLYPH VORTEX (features bg) =================
@@ -194,7 +201,7 @@
 
   /* ================= terminal demo typer ================= */
   var term = document.getElementById('term-body');
-  if (term && !RM) {
+  if (term) {
     var LINES = [
       ['$ git clone https://github.com/sricharanenabothula704-star/hydra.git', 'cmd'],
       ['Cloning into \'hydra\'...', 'out'],
@@ -218,27 +225,36 @@
       ['HEAD response received · security headers checked · no redirect followed', 'done'],
       ['For a real hunt, add only a written-authorized host before /hunt.', 'warn']
     ];
-    var li = 0, ci = 0, started = false;
-    function typeStep() {
-      if (li >= LINES.length) {
-        setTimeout(function(){ term.innerHTML=''; li=0; ci=0; typeStep(); }, 6000);
-        return;
-      }
-      var txt = LINES[li][0], cls = LINES[li][1];
-      if (ci === 0) {
-        var d = document.createElement('div');
-        d.className = 'tl ' + cls;
+    if(RM){
+      LINES.slice(0,8).forEach(function(line){
+        var d=document.createElement('div');
+        d.className='tl '+line[1];
+        d.textContent=line[0];
         term.appendChild(d);
+      });
+    } else {
+      var li = 0, ci = 0, started = false;
+      function typeStep() {
+        if (li >= LINES.length) {
+          setTimeout(function(){ term.innerHTML=''; li=0; ci=0; typeStep(); }, 6000);
+          return;
+        }
+        var txt = LINES[li][0], cls = LINES[li][1];
+        if (ci === 0) {
+          var d = document.createElement('div');
+          d.className = 'tl ' + cls;
+          term.appendChild(d);
+        }
+        var cur = term.lastChild;
+        cur.textContent = txt.slice(0, ++ci);
+        if (ci >= txt.length) { li++; ci = 0; setTimeout(typeStep, cls === 'cmd' ? 420 : 130); }
+        else setTimeout(typeStep, cls === 'cmd' ? 34 : 9);
       }
-      var cur = term.lastChild;
-      cur.textContent = txt.slice(0, ++ci);
-      if (ci >= txt.length) { li++; ci = 0; setTimeout(typeStep, cls === 'cmd' ? 420 : 130); }
-      else setTimeout(typeStep, cls === 'cmd' ? 34 : 9);
+      var tio = new IntersectionObserver(function(es){ es.forEach(function(e){
+        if (e.isIntersecting && !started){ started = true; tio.disconnect(); setTimeout(typeStep, 350); }
+      }); }, { threshold: .4 });
+      tio.observe(term.closest('.demo'));
     }
-    var tio = new IntersectionObserver(function(es){ es.forEach(function(e){
-      if (e.isIntersecting && !started){ started = true; tio.disconnect(); setTimeout(typeStep, 350); }
-    }); }, { threshold: .4 });
-    tio.observe(term.closest('.demo'));
   }
 
   /* ================= 3D tilt on agent cards ================= */
@@ -254,76 +270,6 @@
       card.style.transform = '';
     });
   });
-
-  /* ================= rate HYDRA (stars → GitHub discussion) ================= */
-  var starBtns = document.querySelectorAll('#stars button');
-  var rating = 0, note = document.getElementById('rate-note'), sub = document.getElementById('rate-submit');
-  var NOTES = {1:'rough — needs work',2:'has potential',3:'decent',4:'really good',5:'excellent — star it ⭐'};
-  try {
-    var mine = JSON.parse(localStorage.getItem('hydra_rating')||'null');
-    if (mine && mine.r >= 1) {
-      setTimeout(function(){
-        rating = mine.r;
-        starBtns.forEach(function(x,k){ x.classList.toggle('on', k < mine.r); });
-        if (mine.c) document.getElementById('rate-comment').value = mine.c;
-        note.textContent = '\u2713 your saved rating: ' + mine.r + '/5';
-      }, 100);
-    }
-  } catch(e){}
-  if (starBtns.length) {
-    starBtns.forEach(function(b, i){
-      b.addEventListener('click', function(){
-        rating = i + 1;
-        starBtns.forEach(function(x, k){ x.classList.toggle('on', k < rating); });
-        note.textContent = NOTES[rating];
-      });
-      b.addEventListener('mouseenter', function(){
-        starBtns.forEach(function(x, k){ x.classList.toggle('on', k <= i); });
-      });
-    });
-    document.getElementById('stars').addEventListener('mouseleave', function(){
-      starBtns.forEach(function(x, k){ x.classList.toggle('on', k < rating); });
-    });
-  }
-  if (sub) {
-    sub.addEventListener('click', function(ev){
-      if (!rating) { ev.preventDefault(); note.textContent = 'select a star rating first ↑'; return; }
-      var cmt = (document.getElementById('rate-comment').value || '').trim();
-      // 1. save locally instantly
-      try {
-        localStorage.setItem('hydra_rating', JSON.stringify({r:rating,c:cmt,t:Date.now()}));
-      } catch(e){}
-      note.textContent = '\u2713 saved \u2014 your rating: ' + rating + '/5';
-      // 2. offer public post (opens prefilled discussion)
-      var body = '\u2605 Rating: ' + rating + '/5\n\n' + (cmt || '(no comment)') +
-                 '\n\n--- submitted via site rating widget';
-      ev.preventDefault();
-    window.open('https://github.com/sricharanenabothula704-star/hydra/discussions/new?category=announcements' +
-        '&title=' + encodeURIComponent('Review: ' + rating + '/5 stars') +
-        '&body=' + encodeURIComponent(body), '_blank');
-      sub.textContent = '\u2713 saved \u00b7 posted to GitHub \u2713';
-    });
-  }
-
-  // live stats from public GitHub API (keyless; silent-fail)
-  try {
-    fetch('https://api.github.com/repos/sricharanenabothula704-star/hydra/discussions?per_page=50')
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(ds){
-        if (!ds) return;
-        var n = 0, stars = 0, up = 0;
-        ds.forEach(function(d){
-          n++;
-          up += d.upvote_count || 0;
-          var m = (d.body||'').match(/★ Rating:\s*([1-5])\/5/);
-          if (m) stars += +m[1];
-        });
-        var rated = ds.filter(function(d){ return /★ Rating:\s*[1-5]\/5/.test(d.body||''); }).length;
-        document.getElementById('rs-count').textContent = n;
-        document.getElementById('rs-up').textContent = up;
-        document.getElementById('rs-avg').textContent = rated ? (stars/rated).toFixed(1) + '\u2605' : '–';
-      }).catch(function(){});
-  } catch(e) {}
 
   /* ================= stat counters ================= */
   var cio = new IntersectionObserver(function(es){ es.forEach(function(e){
@@ -348,16 +294,6 @@
   }); }, { threshold: .35 });
   var fl = document.querySelector('.flow');
   if (fl) pio.observe(fl);
-
-  /* ================= review scorecard bars ================= */
-  var bio = new IntersectionObserver(function(es){ es.forEach(function(e){
-    if (!e.isIntersecting) return;
-    bio.unobserve(e.target);
-    e.target.querySelectorAll('.bar i').forEach(function(b, i){
-      setTimeout(function(){ b.style.width = b.getAttribute('data-w') + '%'; }, i * 120);
-    });
-  }); }, { threshold: .4 });
-  document.querySelectorAll('.rev-score').forEach(function(el){ bio.observe(el); });
 
   /* ================= active nav + year ================= */
   var here = location.pathname.split('/').pop() || 'index.html';

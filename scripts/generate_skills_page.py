@@ -59,9 +59,9 @@ def matching_div_end(text: str, open_pos: int) -> int:
 
 
 def card(name: str, description: str) -> str:
-    short = description.strip()
-    if len(short) > 280:
-        short = short[:277].rsplit(" ", 1)[0] + "..."
+    short = description.strip().strip("'\"`")
+    if len(short) >= 280:
+        short = short[:277].rsplit(" ", 1)[0] + "…"
     return (
         f'<div class="scard" data-name="{html.escape(name, quote=True)}">'
         f"<b>{html.escape(name)}</b><p>{html.escape(short)}</p></div>"
